@@ -3,18 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Piso;
 use App\Models\Local;
-
-class PisoController extends Controller
+class localController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $pisos = Piso::get();
-       return response()->json($pisos); 
+        $locales = Local::get();
+       return response()->json($locales);
     }
 
     /**
@@ -36,15 +34,15 @@ class PisoController extends Controller
             return response()->json(['Error' => 'Ingrese por lo menos un registro'], 500);
         }
        
-        foreach($datos as $piso){
+        foreach($datos as $local){
             try{
-                $datosPiso = [
-                    'numero' => $piso['numero'],
-                    'direccion' => $piso['direccion'],
-                    'postal' => $piso['postal'],
-                    'valor' => $piso['valor']
+                $datosLocal = [
+                    'numero' => $local['numero'],
+                    'dimensiones' => $local['dimensiones'],
+                    'valor' => $local['valor'],
+                    'id_piso' => $local['id_piso']
                 ];  
-                $media = Piso::create($datosPiso);
+                $media = Local::create($datosLocal);
             } catch(Exception $e){
                 return response()->json(['error' => 'Error al crear el registro'], 501);
             }
@@ -59,12 +57,12 @@ class PisoController extends Controller
      */
     public function show(string $id)
     {
-        $piso = Piso::find($id);
-        if (!$piso) {
-            return response()->json(['error' => 'Piso no encontrado'], 404);
+        $local = Local::find($id);
+        if (!$local) {
+            return response()->json(['error' => 'Local no encontrado'], 404);
         }
 
-        return response()->json($piso);
+        return response()->json($local);
     }
 
     /**
@@ -77,45 +75,31 @@ class PisoController extends Controller
 
     /**
      * Update the specified resource in storage.
-     * @param  \App\Models\Piso $piso
+     * * @param  \App\Models\Local $local
      */
-    public function update(Request $request, Piso $piso)
+    public function update(Request $request, Local $local)
     {
         $datos = $request->json()->all();
         try{ 
-            $datosPiso = [
+            $datosLocal = [
                 'numero' => $datos['numero'],
-                'direccion' => $datos['direccion'],
-                'postal' => $datos['postal'],
-                'valor' => $datos['valor']
+                'dimensiones' => $datos['dimensiones'],
+                'valor' => $datos['valor'],
+                'id_piso' => $datos['id_piso']
             ];  
-            $piso->update($datosPiso);
+            $local->update($datosLocal);
             return response()->json(['message' => 'Registro Actualizado!'], 200);
         } catch(Exception $e){
             return response()->json(['error' => 'Error al actualizar el registro'], 501);
         }
     }
 
-/**
+    /**
      * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Piso  $piso
-     * @return \Illuminate\Http\Response
      */
-    public function destroy(Piso $piso)
+    public function destroy(Local $local)
     {
-        $piso->delete();
+        $local->delete();
         return response()->json(['message' => 'Registro Eliminado!'], 200);
-    }
-
-    public function getPisoConLocales(string $id)
-    {
-        $piso = Piso::find($id);
-        if (!$piso) {
-            return response()->json(['error' => 'Piso no encontrado'], 404);
-        }
-        $locales = Local::where('id_piso', $id)->get();
-        $piso['locales'] = $locales;
-        return response()->json($piso);
     }
 }
