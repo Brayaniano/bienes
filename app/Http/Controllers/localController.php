@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Local;
+use App\Models\Piso;
+
 class localController extends Controller
 {
     /**
@@ -12,7 +14,13 @@ class localController extends Controller
     public function index()
     {
         $locales = Local::get();
-       return response()->json($locales);
+        return view('locales.index', 
+        compact('locales'), 
+        [
+            'edit_succes' => false, 
+            'delete_succes' => false
+        ]
+    );
     }
 
     /**
@@ -20,7 +28,8 @@ class localController extends Controller
      */
     public function create()
     {
-        //
+        $pisos = Piso::where('estado', 1)->get();
+        return view('locales.create', compact('pisos'));
     }
 
     /**
@@ -28,28 +37,20 @@ class localController extends Controller
      */
     public function store(Request $request)
     {
-        $datos = $request->json()->all();
-        $size = sizeof($datos);
-        if($size == 0){
-            return response()->json(['Error' => 'Ingrese por lo menos un registro'], 500);
+        try{
+            $datosLocal = [
+                'numero' => $request->numero,
+                'dimensiones' => $request->dimensiones,
+                'valor' => $request->valor,
+                'id_piso' => $request->id_piso,
+                'estado' => $request->estado
+            ];  
+            $media = Local::create($datosLocal);
+        } catch(Exception $e){
+            return response()->json(['error' => 'Error al crear el registro'], 501);
         }
-       
-        foreach($datos as $local){
-            try{
-                $datosLocal = [
-                    'numero' => $local['numero'],
-                    'dimensiones' => $local['dimensiones'],
-                    'valor' => $local['valor'],
-                    'id_piso' => $local['id_piso']
-                ];  
-                $media = Local::create($datosLocal);
-            } catch(Exception $e){
-                return response()->json(['error' => 'Error al crear el registro'], 501);
-            }
-
-        }
-        
-        return response()->json(['message' => 'Registro ingresado!'], 200);
+        $pisos = Piso::where('estado', 1)->get();
+        return view('locales.create', ['value' => true],compact('pisos'));
     }
 
     /**
@@ -62,7 +63,7 @@ class localController extends Controller
             return response()->json(['error' => 'Local no encontrado'], 404);
         }
 
-        return response()->json($local);
+        return view('locales.show', compact('local'));
     }
 
     /**
@@ -70,36 +71,47 @@ class localController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $pisos = Piso::where('estado', 1)->get();
+        $local = Local::find($id);
+        return view('locales.edit', compact('pisos','local'));
     }
 
     /**
      * Update the specified resource in storage.
-     * * @param  \App\Models\Local $local
      */
-    public function update(Request $request, Local $local)
+    public function update(Request $request, $id)
     {
-        $datos = $request->json()->all();
-        try{ 
+        $local = Local::find($id);
+        try{
             $datosLocal = [
-                'numero' => $datos['numero'],
-                'dimensiones' => $datos['dimensiones'],
-                'valor' => $datos['valor'],
-                'id_piso' => $datos['id_piso']
+                'numero' => $request->numero,
+                'dimensiones' => $request->dimensiones,
+                'valor' => $request->valor,
+                'id_piso' => $request->id_piso,
+                'estado' => $request->estado
             ];  
             $local->update($datosLocal);
-            return response()->json(['message' => 'Registro Actualizado!'], 200);
+            $locales = Local::get();
+            return redirect()->route('locales.index', ['edit_succes' => true, 'delete_succes' => false, 'locales' => $locales]);
         } catch(Exception $e){
-            return response()->json(['error' => 'Error al actualizar el registro'], 501);
+            "";
         }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Local $local)
+    public function destroy($id)
     {
+        $local = Local::find($id);
         $local->delete();
-        return response()->json(['message' => 'Registro Eliminado!'], 200);
+        $locales = Local::get();
+        return redirect()->route('locales.index',
+        [
+            'edit_succes' => false, 
+            'delete_succes' => true,
+            'locales' => $locales
+        ]
+    );
     }
 }

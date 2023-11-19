@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('direccion');
             $table->integer('postal');
             $table->decimal('valor', 10, 2);
+            $table->integer('id_edificio')->nullable();
+            $table->integer('estado');
             $table->timestamps();
         });
     }

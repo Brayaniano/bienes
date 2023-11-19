@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Piso;
 use App\Models\Local;
+use App\Models\Edificio;
 
 class PisoController extends Controller
 {
@@ -14,7 +15,13 @@ class PisoController extends Controller
     public function index()
     {
         $pisos = Piso::get();
-       return response()->json($pisos); 
+        return view('pisos.index', 
+                    compact('pisos'), 
+                    [
+                        'edit_succes' => false, 
+                        'delete_succes' => false
+                    ]
+                );
     }
 
     /**
@@ -22,7 +29,8 @@ class PisoController extends Controller
      */
     public function create()
     {
-        //
+        $edificios = Edificio::where('estado', 1)->get();
+        return view('pisos.create', compact('edificios'));
     }
 
     /**
@@ -30,28 +38,22 @@ class PisoController extends Controller
      */
     public function store(Request $request)
     {
-        $datos = $request->json()->all();
-        $size = sizeof($datos);
-        if($size == 0){
-            return response()->json(['Error' => 'Ingrese por lo menos un registro'], 500);
-        }
-       
-        foreach($datos as $piso){
-            try{
+       try{
                 $datosPiso = [
-                    'numero' => $piso['numero'],
-                    'direccion' => $piso['direccion'],
-                    'postal' => $piso['postal'],
-                    'valor' => $piso['valor']
+                    'numero' => $request->numero,
+                    'direccion' => $request->direccion,
+                    'postal' =>$request->postal,
+                    'valor' => $request->valor,
+                    'id_edificio' => $request->id_edificio,
+                    'estado' => $request->estado
                 ];  
                 $media = Piso::create($datosPiso);
             } catch(Exception $e){
                 return response()->json(['error' => 'Error al crear el registro'], 501);
             }
 
-        }
-        
-        return response()->json(['message' => 'Registro ingresado!'], 200);
+            $edificios = Edificio::where('estado', 1)->get();
+            return view('pisos.create', ['value' => true],compact('edificios'));
     }
 
     /**
@@ -60,11 +62,12 @@ class PisoController extends Controller
     public function show(string $id)
     {
         $piso = Piso::find($id);
+        $locales = Local::where('id_piso', $id)->get();
         if (!$piso) {
-            return response()->json(['error' => 'Piso no encontrado'], 404);
+            return "";
         }
 
-        return response()->json($piso);
+        return view('pisos.show', compact('piso', 'locales'));
     }
 
     /**
@@ -72,25 +75,30 @@ class PisoController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $edificios = Edificio::where('estado', 1)->get();
+        $piso = Piso::find($id);
+        return view('pisos.edit', compact('edificios','piso'));
     }
 
     /**
      * Update the specified resource in storage.
      * @param  \App\Models\Piso $piso
      */
-    public function update(Request $request, Piso $piso)
+    public function update(Request $request, $id)
     {
-        $datos = $request->json()->all();
+        $piso = Piso::find($id);
         try{ 
             $datosPiso = [
-                'numero' => $datos['numero'],
-                'direccion' => $datos['direccion'],
-                'postal' => $datos['postal'],
-                'valor' => $datos['valor']
+                'numero' => $request->numero,
+                'direccion' => $request->direccion,
+                'postal' =>$request->postal,
+                'valor' => $request->valor,
+                'id_edificio' => $request->id_edificio,
+                'estado' => $request->estado
             ];  
             $piso->update($datosPiso);
-            return response()->json(['message' => 'Registro Actualizado!'], 200);
+            $pisos = Piso::get();
+            return redirect()->route('pisos.index', ['edit_succes' => true, 'delete_succes' => false, 'pisos' => $pisos]);
         } catch(Exception $e){
             return response()->json(['error' => 'Error al actualizar el registro'], 501);
         }
@@ -102,20 +110,13 @@ class PisoController extends Controller
      * @param  \App\Models\Piso  $piso
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Piso $piso)
-    {
-        $piso->delete();
-        return response()->json(['message' => 'Registro Eliminado!'], 200);
-    }
-
-    public function getPisoConLocales(string $id)
+    public function destroy($id)
     {
         $piso = Piso::find($id);
-        if (!$piso) {
-            return response()->json(['error' => 'Piso no encontrado'], 404);
-        }
-        $locales = Local::where('id_piso', $id)->get();
-        $piso['locales'] = $locales;
-        return response()->json($piso);
+        $piso->delete();
+        $pisos = Piso::get();
+        return redirect()->route('pisos.index', ['edit_succes' => false, 'delete_succes' => true, 'pisos' => $pisos]);
     }
+
+ 
 }

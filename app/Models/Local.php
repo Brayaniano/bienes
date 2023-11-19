@@ -13,6 +13,7 @@ class Local extends Model
         'numero',
         'dimensiones',
         'valor',
-        'id_piso'
+        'id_piso',
+        'estado'
     ];
 }

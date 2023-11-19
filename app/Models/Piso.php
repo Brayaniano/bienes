@@ -13,7 +13,9 @@ class Piso extends Model
         'numero',
         'direccion',
         'postal',
-        'valor'
+        'valor',
+        'id_edificio',
+        'estado'
     ];
 
 }

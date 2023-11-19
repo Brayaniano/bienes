@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('dimensiones');
             $table->decimal('valor', 10, 2);
             $table->integer('id_piso')->nullable();
+            $table->integer('estado');
             $table->timestamps();
         });
     }
