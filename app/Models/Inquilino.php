@@ -9,6 +9,7 @@ class Inquilino extends Model
 {
     use HasFactory;
     protected $table = 'inquilino';
+    protected $primaryKey = 'cedula';
     protected $fillable = [
         'cedula',
         'nombre',
