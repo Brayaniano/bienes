@@ -43,6 +43,11 @@
                         <option value="2">Alquilado</option>
                         <option value="3">En proceso de Alquiler</option>
                         <option value="4">No disponible</option>
+
+                        <option value="1" {{ $local->estado == '1' ? 'selected' : '' }}>Disponible</option>
+                        <option value="2" {{ $local->estado == '2' ? 'selected' : '' }}>Alquilado</option>
+                        <option value="3" {{ $local->estado == '3' ? 'selected' : '' }}>En proceso de Alquiler</option>
+                        <option value="4" {{ $local->estado == '4' ? 'selected' : '' }}>No disponible</option>
                     </select>
                 </div>
                 <div class="relative z-0 w-full mb-6 group">
@@ -50,7 +55,9 @@
                     <select id="id_piso" name="id_piso" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" >
                         <option value="">Sin Piso</option>
                         @foreach ($pisos as $piso)
-                        <option value="{{$piso->id}}">{{$piso->numero}}</option>
+                            <option value="{{ $edificio->id }}" {{ $local->id_edificio == $edificio->id ? 'selected' : '' }}>
+                                {{ $edificio->nombre }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
