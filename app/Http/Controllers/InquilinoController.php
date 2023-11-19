@@ -35,31 +35,36 @@ class InquilinoController extends Controller
      */
     public function store(Request $request)
     {
-        $datos = $request->json()->all();
-        $size = sizeof($datos);
-        if($size == 0){
-            return response()->json(['Error' => 'Ingrese por lo menos un registro'], 500);
-        }
+            $inquilinos = Inquilino::get();
+            $validar = $this->validarCedule($request->cedula);
+            if (!$validar){
+                return view('inquilinos.create', ['value' => false, 'error' => true],compact('inquilinos'));
+            }
        
-        foreach($datos as $inquilino){
             try{
                 $datosInquilino = [
-                    'cedula' => $inquilino['cedula'],
-                    'nombre' => $inquilino['nombre'],
-                    'apellido' => $inquilino['apellido'],
-                    'numero_cuenta' => $inquilino['numero_cuenta'],
-                    'edad' => $inquilino['edad'],
-                    'sexo' => $inquilino['sexo'],
-                    'fecha_nacimiento' => $inquilino['fecha_nacimiento']
+                    'cedula' => $request->cedula,
+                    'apellido' => $request->apellido,
+                    'nombre' =>$request->nombre,
+                    'numero_cuenta' => $request->numero_cuenta,
+                    'edad' => $request->edad,
+                    'sexo' => $request->sexo,
+                    'fecha_nacimiento' => $request->fecha_nacimiento
                 ];  
                 $media = Inquilino::create($datosInquilino);
+                $inquilinos = Inquilino::get();
+        return view('inquilinos.index', 
+        compact('inquilinos'), 
+        [
+            'edit_succes' => true, 
+            'delete_succes' => false
+        ]);
             } catch(Exception $e){
                 return response()->json(['error' => 'Error al crear el registro'], 501);
             }
 
-        }
         
-        return response()->json(['message' => 'Registro ingresado!'], 200);
+        
     }
 
     /**
@@ -67,7 +72,8 @@ class InquilinoController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $inquilino = Inquilino::where('cedula', $id)->first();
+        return view('inquilinos.show', compact('inquilino'));
     }
 
     /**
@@ -75,7 +81,8 @@ class InquilinoController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $inquilino = Inquilino::where('cedula', $id)->first();
+        return view('inquilinos.edit', compact('inquilino'));
     }
 
     /**
@@ -83,7 +90,23 @@ class InquilinoController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $inquilino = Inquilino::where('cedula', $id)->first();
+        try{
+            $datosInquilino = [
+                'apellido' => $request->apellido,
+                'nombre' =>$request->nombre,
+                'numero_cuenta' => $request->numero_cuenta,
+                'edad' => $request->edad,
+                'sexo' => $request->sexo,
+                'fecha_nacimiento' => $request->fecha_nacimiento
+            ];  
+            $inquilino->update($datosInquilino);
+            $inquilinos = Inquilino::get();
+            return redirect()->route('inquilinos.index', ['edit_succes' => true, 'delete_succes' => false, 'inquilinos' => $inquilinos]);
+        } catch(Exception $e){
+            return response()->json(['error' => 'Error al crear el registro'], 501);
+        }
+
     }
 
     /**
@@ -91,6 +114,19 @@ class InquilinoController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $inquilino = Inquilino::where('cedula', $id)->first();
+        $inquilino->delete();
+        $inquilinos = Inquilino::get();
+        return redirect()->route('inquilinos.index', ['edit_succes' => false, 'delete_succes' => true, 'inquilinos' => $inquilinos]);
+    }
+
+    public function validarCedule($cedula){
+        $inquilino = Inquilino::where('cedula', $cedula)->first();
+        $size = $inquilino->count();
+        if($size == 0){
+            return true;
+        }else{
+            return false;
+        }
     }
 }
