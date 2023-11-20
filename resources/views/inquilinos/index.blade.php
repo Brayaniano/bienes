@@ -6,7 +6,7 @@
     </x-slot>
     <div class="py-4">
         <div class="max-w-5xl mx-auto sm:px-4 lg:px-8">
-            <div class="">
+            <div class="grid grid-cols-4">
                 <div class="my-4">
                     <label class="relative block">
                         <span class="sr-only">Search</span>
@@ -16,11 +16,14 @@
                         <input id="identificationFilter" class="placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 pl-9 pr-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm" placeholder="Buscar por indetificación" type="text" name="search"/>
                     </label>
                 </div>
-                <a href="{{ url('/inquilinos/create') }}">
-                    <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full">
-                    Crear Nuevo Inquilino
-                    </button>
-                </a>
+                <div class="ml-6 py-4">
+                    <a href="{{ url('/inquilinos/create') }}">
+                        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full">
+                            Crear Nuevo Inquilino
+                        </button>
+                    </a>
+                </div>
+                
             </div>
         </div>
     </div>
