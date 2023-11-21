@@ -5,6 +5,7 @@ use App\Http\Controllers\PisoController;
 use App\Http\Controllers\LocalController;
 use App\Http\Controllers\EdificioController;
 use App\Http\Controllers\InquilinoController;
+use App\Http\Controllers\ContratoController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -62,7 +63,15 @@ Route::middleware('auth')->group(function () {
         Route::post('/inquilino/{id}', [InquilinoController::class, 'update']);
         Route::get('/inquilinos/{id}/delete', [InquilinoController::class, 'destroy'])->name('inquilinos.delete');
     //** Rutas para Inquilino */
-
+    //** Rutas para Contrato */
+        Route::get('/contratos', [ContratoController::class, 'index'])->name('contratos.index');
+        Route::get('/contratos/create', [ContratoController::class, 'create'])->name('contratos');
+        Route::get('/contrato/{id}', [ContratoController::class, 'show'])->name('contratos.show');
+        Route::post('/contratos', [ContratoController::class, 'store'])->name('contratos');
+        Route::get('/contratos/{id}/edit', [ContratoController::class, 'edit'])->name('contratos.edit');
+        Route::post('/contrato/{id}', [ContratoController::class, 'update']);
+        Route::get('/contratos/{id}/delete', [ContratoController::class, 'destroy'])->name('contratos.delete');
+    //** Rutas para Contrato */
 });
 
 

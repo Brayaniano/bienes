@@ -22,7 +22,10 @@ return new class extends Migration
             ['status' => 'Disponible'],
             ['status' => 'Alquilado'],
             ['status' => 'En Proceso de Alquiler'],
-            ['status' => 'No Disponible']
+            ['status' => 'No Disponible'],
+            ['status' => 'Vigente'],
+            ['status' => 'Expirado'],
+            ['status' => 'Proximo a entrar en vigencia'],
         ];
         foreach ($estados as $estado) {
             DB::table('estado')->insert($estado);

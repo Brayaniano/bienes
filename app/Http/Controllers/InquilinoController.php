@@ -122,8 +122,7 @@ class InquilinoController extends Controller
 
     public function validarCedule($cedula){
         $inquilino = Inquilino::where('cedula', $cedula)->first();
-        $size = $inquilino->count();
-        if($size == 0){
+        if(!$inquilino){
             return true;
         }else{
             return false;

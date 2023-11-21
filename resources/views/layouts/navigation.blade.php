@@ -21,6 +21,11 @@
                         {{ __('Inquilinos') }}
                     </x-nav-link>
                 </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('contratos')" :active="request()->routeIs('contratos.index')">
+                        {{ __('Contratos') }}
+                    </x-nav-link>
+                </div>
                 <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown width="48">
                     <x-slot name="trigger">
