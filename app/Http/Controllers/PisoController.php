@@ -103,7 +103,6 @@ class PisoController extends Controller
                 'direccion' => $request->direccion,
                 'postal' =>$request->postal,
                 'valor' => $request->valor,
-                'id_cuenta' => $request->id_cuenta,
                 'id_edificio' => $request->id_edificio,
                 'estado' => $request->estado
             ];  

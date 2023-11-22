@@ -8,6 +8,7 @@ use App\Http\Controllers\InquilinoController;
 use App\Http\Controllers\ContratoController;
 use App\Http\Controllers\CuentaController;
 use App\Http\Controllers\EgresoController;
+use App\Http\Controllers\ReciboController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -98,6 +99,18 @@ Route::middleware('auth')->group(function () {
         Route::post('/egreso/{id}', [EgresoController::class, 'update']);
         Route::get('/egresos/{id}/delete', [EgresoController::class, 'destroy'])->name('egresos.delete');
     //** Rutas para Cuenta */
+    //** Rutas para Recibo */
+        Route::get('/recibos', [ReciboController::class, 'index'])->name('recibos.index');
+        Route::get('/recibos/create', [ReciboController::class, 'create'])->name('recibos');
+        Route::get('/recibo/{id}', [ReciboController::class, 'show'])->name('recibos.show');
+        Route::post('/recibos', [ReciboController::class, 'store'])->name('recibos');
+        Route::post('/recibos-edificio', [ReciboController::class, 'storeEdificio'])->name('recibos.edificio');
+        Route::post('/recibos-piso', [ReciboController::class, 'storePiso'])->name('recibos.pisos');
+        Route::post('/recibos-local', [ReciboController::class, 'storeLocal'])->name('recibos.locales');
+        Route::get('/recibos/{id}/edit', [ReciboController::class, 'edit'])->name('recibos.edit');
+        Route::post('/recibo/{id}', [ReciboController::class, 'update']);
+        Route::get('/recibos/{id}/delete', [ReciboController::class, 'destroy'])->name('recibos.delete');
+    //** Rutas para Recibo */
 });
 
 

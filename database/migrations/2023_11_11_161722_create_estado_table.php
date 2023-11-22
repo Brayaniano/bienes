@@ -26,6 +26,9 @@ return new class extends Migration
             ['status' => 'Vigente'],
             ['status' => 'Expirado'],
             ['status' => 'Proximo a entrar en vigencia'],
+            ['status' => 'Pagado'],
+            ['status' => 'Vencido'],
+            ['status' => 'Por pagar']
         ];
         foreach ($estados as $estado) {
             DB::table('estado')->insert($estado);
