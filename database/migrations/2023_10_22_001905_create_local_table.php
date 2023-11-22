@@ -18,7 +18,10 @@ return new class extends Migration
             $table->decimal('valor', 10, 2);
             $table->integer('id_piso')->nullable();
             $table->integer('estado');
+            $table->unsignedBigInteger('id_cuenta');
             $table->timestamps();
+
+            $table->foreign('id_cuenta')->references('id')->on('cuenta')->onDelete('cascade');
         });
     }
 

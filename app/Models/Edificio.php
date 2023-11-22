@@ -13,7 +13,13 @@ class Edificio extends Model
         'nombre',
         'direccion',
         'postal',
+        'id_cuenta',
         'valor',
         'estado'
     ];
+
+    public function cuenta()
+{
+    return $this->belongsTo(Cuenta::class, 'id_cuenta');
+}
 }

@@ -6,6 +6,8 @@ use App\Http\Controllers\LocalController;
 use App\Http\Controllers\EdificioController;
 use App\Http\Controllers\InquilinoController;
 use App\Http\Controllers\ContratoController;
+use App\Http\Controllers\CuentaController;
+use App\Http\Controllers\EgresoController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -72,6 +74,24 @@ Route::middleware('auth')->group(function () {
         Route::post('/contrato/{id}', [ContratoController::class, 'update']);
         Route::get('/contratos/{id}/delete', [ContratoController::class, 'destroy'])->name('contratos.delete');
     //** Rutas para Contrato */
+    //** Rutas para Cuenta */
+        Route::get('/cuentas', [CuentaController::class, 'index'])->name('cuentas.index');
+        Route::get('/cuentas/create', [CuentaController::class, 'create'])->name('cuentas');
+        Route::get('/cuenta/{id}', [CuentaController::class, 'show'])->name('cuentas.show');
+        Route::post('/cuentas', [CuentaController::class, 'store'])->name('cuentas');
+        Route::get('/cuentas/{id}/edit', [CuentaController::class, 'edit'])->name('cuentas.edit');
+        Route::post('/cuenta/{id}', [CuentaController::class, 'update']);
+        Route::get('/cuentas/{id}/delete', [CuentaController::class, 'destroy'])->name('cuentas.delete');
+    //** Rutas para Cuenta */
+    //** Rutas para Cuenta */
+        Route::get('/egresos', [EgresoController::class, 'index'])->name('egresos.index');
+        Route::get('/egresos/create', [EgresoController::class, 'create'])->name('egresos');
+        Route::get('/egreso/{id}', [EgresoController::class, 'show'])->name('egresos.show');
+        Route::post('/egresos', [EgresoController::class, 'store'])->name('egresos');
+        Route::get('/egresos/{id}/edit', [EgresoController::class, 'edit'])->name('egresos.edit');
+        Route::post('/egreso/{id}', [EgresoController::class, 'update']);
+        Route::get('/egresos/{id}/delete', [EgresoController::class, 'destroy'])->name('egresos.delete');
+    //** Rutas para Cuenta */
 });
 
 

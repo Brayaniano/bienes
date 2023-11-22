@@ -21,6 +21,9 @@
                                     Valor $
                                 </th>
                                 <th scope="col" class="px-6 py-3">
+                                    Saldo $
+                                </th>
+                                <th scope="col" class="px-6 py-3">
                                     Estado
                                 </th>
                             </tr>
@@ -34,6 +37,9 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     <?php echo number_format($local->valor, 2, ",", ".");?>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <?php echo number_format($local->cuenta->saldo, 2, ",", ".");?>
                                 </td>
                                 <td class="px-6 py-4" id="state">
                                 @switch($local->estado)

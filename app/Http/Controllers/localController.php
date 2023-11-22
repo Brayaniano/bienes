@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Local;
 use App\Models\Piso;
+use App\Models\Cuenta;
 
 class localController extends Controller
 {
@@ -37,15 +38,24 @@ class localController extends Controller
      */
     public function store(Request $request)
     {
+        $validar = $this->validateCuenta($request->id_cuenta);
+        if (!$validar){
+            $pisos = Piso::where('estado', 1)->get();
+            return view('locales.create', ['value' => false, 'error' => true , 'pisos' =>  $pisos]);
+        }
+        $cuenta = $this->createCuenta($request->id_cuenta);
         try{
             $datosLocal = [
                 'numero' => $request->numero,
                 'dimensiones' => $request->dimensiones,
                 'valor' => $request->valor,
                 'id_piso' => $request->id_piso,
+                'id_cuenta' => $request->id_cuenta,
                 'estado' => $request->estado
             ];  
-            $media = Local::create($datosLocal);
+            $local = Local::create($datosLocal);
+            $local->cuenta()->associate($cuenta); 
+            $local->save();
         } catch(Exception $e){
             return response()->json(['error' => 'Error al crear el registro'], 501);
         }
@@ -62,7 +72,7 @@ class localController extends Controller
         if (!$local) {
             return response()->json(['error' => 'Local no encontrado'], 404);
         }
-
+        $local->load("cuenta");
         return view('locales.show', compact('local'));
     }
 
@@ -113,5 +123,28 @@ class localController extends Controller
             'locales' => $locales
         ]
     );
+    }
+
+    public function validateCuenta($id){
+        $cuenta = Cuenta::where('id', $id)->first();
+        if(!$cuenta){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function createCuenta($id){
+        try{
+            $datosCuenta = [
+                'id' => $id,
+                'saldo' => 0
+            ];  
+            $media = Cuenta::create($datosCuenta);
+            $cuenta = Cuenta::where('id', $id)->first();
+            return $cuenta;
+        } catch(Exception $e){
+            return false;
+        }
     }
 }

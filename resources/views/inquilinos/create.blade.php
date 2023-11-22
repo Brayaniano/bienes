@@ -4,7 +4,7 @@
             {{ __('Crear un Inquilino') }}
         </h2>
     </x-slot>
-    @if(isset($value))
+    @if(isset($value) &&  $value != false)
     {
         <div class="bg-teal-100 border-t-4 border-teal-500 rounded-b text-teal-900 px-4 py-3 shadow-md" role="alert">
             <div class="flex">
@@ -17,7 +17,7 @@
       </div>
     }
     @endif
-    @if(isset($error))
+    @if(isset($error) &&  $error != false)
     {
         <div class="bg-red-100 border-t-4 border-red-500 rounded-b text-red-900 px-4 py-3 shadow-md" role="alert">
             <div class="flex">

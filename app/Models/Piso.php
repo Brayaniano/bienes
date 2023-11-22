@@ -15,7 +15,11 @@ class Piso extends Model
         'postal',
         'valor',
         'id_edificio',
+        'id_cuenta',
         'estado'
     ];
-
+    public function cuenta()
+        {
+            return $this->belongsTo(Cuenta::class, 'id_cuenta');
+        }
 }

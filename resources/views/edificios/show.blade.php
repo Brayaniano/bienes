@@ -24,6 +24,9 @@
                                     Valor $
                                 </th>
                                 <th scope="col" class="px-6 py-3">
+                                    Saldo $
+                                </th>
+                                <th scope="col" class="px-6 py-3">
                                     Estado
                                 </th>
                                 <th scope="col" class="px-6 py-3">
@@ -44,6 +47,9 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     <?php echo number_format($edificio->valor, 2, ",", ".");?>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <?php echo number_format($edificio->cuenta->saldo, 2, ",", ".");?>
                                 </td>
                                 <td class="px-6 py-4" id="state">
                                 @switch($edificio->estado)

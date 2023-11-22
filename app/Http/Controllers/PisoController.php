@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Piso;
 use App\Models\Local;
 use App\Models\Edificio;
+use App\Models\Cuenta;
 
 class PisoController extends Controller
 {
@@ -38,6 +39,12 @@ class PisoController extends Controller
      */
     public function store(Request $request)
     {
+        $validar = $this->validateCuenta($request->id_cuenta);
+        if (!$validar){
+            $edificios = Edificio::where('estado', 1)->get();
+            return view('pisos.create', ['value' => false, 'error' => true , 'edificios' =>  $edificios]);
+        }
+        $cuenta = $this->createCuenta($request->id_cuenta);
        try{
                 $datosPiso = [
                     'numero' => $request->numero,
@@ -45,9 +52,12 @@ class PisoController extends Controller
                     'postal' =>$request->postal,
                     'valor' => $request->valor,
                     'id_edificio' => $request->id_edificio,
+                    'id_cuenta' => $request->id_cuenta,
                     'estado' => $request->estado
                 ];  
-                $media = Piso::create($datosPiso);
+                $piso = Piso::create($datosPiso);
+                $piso->cuenta()->associate($cuenta); 
+                $piso->save();
             } catch(Exception $e){
                 return response()->json(['error' => 'Error al crear el registro'], 501);
             }
@@ -66,7 +76,7 @@ class PisoController extends Controller
         if (!$piso) {
             return "";
         }
-
+        $piso->load('cuenta');
         return view('pisos.show', compact('piso', 'locales'));
     }
 
@@ -93,6 +103,7 @@ class PisoController extends Controller
                 'direccion' => $request->direccion,
                 'postal' =>$request->postal,
                 'valor' => $request->valor,
+                'id_cuenta' => $request->id_cuenta,
                 'id_edificio' => $request->id_edificio,
                 'estado' => $request->estado
             ];  
@@ -118,5 +129,27 @@ class PisoController extends Controller
         return redirect()->route('pisos.index', ['edit_succes' => false, 'delete_succes' => true, 'pisos' => $pisos]);
     }
 
+    public function validateCuenta($id){
+        $cuenta = Cuenta::where('id', $id)->first();
+        if(!$cuenta){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function createCuenta($id){
+        try{
+            $datosCuenta = [
+                'id' => $id,
+                'saldo' => 0
+            ];  
+            $media = Cuenta::create($datosCuenta);
+            $cuenta = Cuenta::where('id', $id)->first();
+            return $cuenta;
+        } catch(Exception $e){
+            return false;
+        }
+    }
  
 }

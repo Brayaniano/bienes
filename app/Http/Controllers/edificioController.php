@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Models\Edificio;
 use App\Models\Piso;
 use App\Models\Local;
+use App\Models\Cuenta;
 use Illuminate\Http\Request;
 
 class edificioController extends Controller
@@ -38,19 +39,28 @@ class edificioController extends Controller
      */
     public function store(Request $request)
     {
+        $validar = $this->validateCuenta($request->id_cuenta);
+        if (!$validar){
+            return view('edificios.create', ['value' => false, 'error' => true]);
+        }
+        $cuenta = $this->createCuenta($request->id_cuenta);
         try{
             $datosEdificio = [
                 'nombre' => $request->nombre,
                 'direccion' => $request->direccion,
                 'postal' =>$request->postal,
+                'id_cuenta' => $request->id_cuenta,
                 'valor' => $request->valor,
                 'estado' => $request->estado
             ];  
-                $media = Edificio::create($datosEdificio);
+                $edificio = Edificio::create($datosEdificio);
+                $edificio->cuenta()->associate($cuenta); 
+                $edificio->save();
+                return view('edificios.create', ['value' => true]);
             } catch(Exception $e){
                 "";
             }
-            return view('edificios.create', ['value' => true]);
+            
     }
 
 
@@ -61,6 +71,7 @@ class edificioController extends Controller
     {
         $edificio = Edificio::find($id);
         $pisos = Piso::where('id_edificio', $id)->get();
+        $edificio->load('cuenta');
         return view('edificios.show', compact('edificio', 'pisos'));
     }
 
@@ -110,6 +121,27 @@ class edificioController extends Controller
         $edificio->delete();
         return response()->json(['message' => 'Registro Eliminado!'], 200);
     }
+    public function validateCuenta($id){
+        $cuenta = Cuenta::where('id', $id)->first();
+        if(!$cuenta){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
+    public function createCuenta($id){
+        try{
+            $datosCuenta = [
+                'id' => $id,
+                'saldo' => 0
+            ];  
+            $media = Cuenta::create($datosCuenta);
+            $cuenta = Cuenta::where('id', $id)->first();
+            return $cuenta;
+        } catch(Exception $e){
+            return false;
+        }
+    }
 
 }

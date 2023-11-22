@@ -14,6 +14,11 @@ class Local extends Model
         'dimensiones',
         'valor',
         'id_piso',
+        'id_cuenta',
         'estado'
     ];
+    public function cuenta()
+{
+    return $this->belongsTo(Cuenta::class, 'id_cuenta');
+}
 }

@@ -17,8 +17,11 @@ return new class extends Migration
             $table->string('direccion');
             $table->integer('postal');
             $table->decimal('valor', 10, 2);
+            $table->unsignedBigInteger('id_cuenta');
             $table->integer('estado');
             $table->timestamps();
+
+            $table->foreign('id_cuenta')->references('id')->on('cuenta')->onDelete('cascade');
         });
     }
 
